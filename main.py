@@ -7,6 +7,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+
 def get_db():
     db = SessionLocal()
     try:
@@ -17,12 +18,18 @@ def get_db():
 
 # CREATE
 @app.post("/accounts")
-def create_account(login: str, password: str, rank: int, db: Session = Depends(get_db)):
-    new_acc = Account(login=login, password=password, rank=rank)
+def create_account(login: str, password: str, db: Session = Depends(get_db)):
+    new_acc = Account(login=login, password=password)
     db.add(new_acc)
     db.commit()
     db.refresh(new_acc)
     return new_acc
+
+
+# READ ALL
+@app.get("/ken10")
+def read_accounts():
+    return {"message": "Criada por K10"}
 
 
 # READ ALL
@@ -43,11 +50,7 @@ def read_account(player_id: int, db: Session = Depends(get_db)):
 # UPDATE
 @app.put("/accounts/{player_id}")
 def update_account(
-    player_id: int,
-    login: str = None,
-    password: str = None,
-    rank: int = None,
-    db: Session = Depends(get_db)
+    player_id: int, login: str = None, password: str = None, rank: int = None, db: Session = Depends(get_db)
 ):
     acc = db.query(Account).filter(Account.player_id == player_id).first()
     if not acc:
@@ -76,7 +79,9 @@ def delete_account(player_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Account deletada com sucesso"}
 
+
 from fastapi.responses import RedirectResponse
+
 
 @app.get("/")
 def root():
