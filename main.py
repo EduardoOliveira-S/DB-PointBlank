@@ -29,7 +29,7 @@ def create_account(login: str, password: str, db: Session = Depends(get_db)):
 # READ ALL
 @app.get("/ken10")
 def read_accounts():
-    return {"message": "Criada por K10"}
+    return {"message": "Criada por K11"}
 
 
 # READ ALL
